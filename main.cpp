@@ -125,11 +125,11 @@ class runtime{
 
         
 
-        void runOnce(){
-            
-
+        void runOnce(bool isInitial=false){
             sortQ();
-
+            if(isInitial == true){
+                this->index = Q[0];
+            }
 
             printAll();
         }
