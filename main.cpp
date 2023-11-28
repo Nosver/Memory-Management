@@ -20,6 +20,7 @@ struct process{
     unsigned int duration;   // time for process (2, 3, etc.)
     unsigned int resources[processNumber];   // resources being used (e: 2, 3, 4)
     bool isInProcess;
+    process* next;
 
     process(string name, unsigned int duration, unsigned int R1, unsigned int R2, unsigned int R3){
         this->name = name;
@@ -35,7 +36,7 @@ struct process{
     process(){}
 
     void print(){
-        cout << name << ", Time: " << duration << ", Resource Times: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << endl;
+        cout << name << ", Time: " << duration << ", R: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << endl;
     }
 
     void generateRandomProcess(unsigned int &count){
@@ -58,10 +59,21 @@ class runtime{
 
     private:
 
-        priority_queue<process*, vector<process*>, comparator> PQ;
+        vector<process*> Q;
         unsigned int count;
+        process* index;
 
-        void push(process &PX){PQ.push(&PX);}
+        void sortQ(){
+            sort(Q.begin(), Q.end(), comparator());
+            for(int i=0; i < 3; i++){
+                if(i == 2){
+                    Q.at(i)->next = Q.at(0);
+                }
+                else{
+                    Q.at(i)->next = Q.at(i+1);
+                }
+            }
+        }
 
     public:
 
@@ -77,7 +89,7 @@ class runtime{
                     cout << "Resource [" << i+1 << "]: ";
                     cin >> PX->resources[i];
                 }
-                PQ.push(PX);
+                Q.push_back(PX);
             }
         }
 
@@ -87,7 +99,7 @@ class runtime{
         }
 
         ~runtime(){
-            for(int i=0; i < PQ.size(); i++){PQ.pop();}
+            for(int i=0; i < Q.size(); i++){Q.pop_back();}
         }
 
         bool isAvailable(process* P){
@@ -95,43 +107,13 @@ class runtime{
         }
 
         void run(){
-            process* temp = PQ.top();
-            PQ.pop();
-
-            // If there is available resources run
-            if(isAvailable(temp)){
-                // If process is already consumed resources do not take any resource
-                if(!temp->isInProcess){
-                    for(int i=0; i < processNumber; i++){
-                        mainResources[i] -= temp->resources[i];
-                    }
-                    temp->isInProcess = true;
-                }
-                
-                temp->duration--;
-            }
-
-            // If process is completed, free the resources
-            if(temp->duration == 0){
-                for(int i=0; i < processNumber; i++){
-                    mainResources[i] += temp->resources[i];
-                }
-
-                // Generate Random process
-                temp->generateRandomProcess(count);
-            }
-
-            // Push process into PQ
-            PQ.push(temp);
-
+    
         }
 
         void printAll(){
-            priority_queue<process*, vector<process*>, comparator> temp = PQ;
             cout << "o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o" << endl;
-            for(int i=0; i < PQ.size(); i++){
-                temp.top()->print();
-                temp.pop();
+            for(int i=0; i < Q.size(); i++){
+                Q[i]->print();
             }
             cout << "o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o" << endl;
         }
