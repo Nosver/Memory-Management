@@ -2,6 +2,9 @@
 #include <vector>
 #include <queue>
 #include <random> 
+#include <string>
+#include <algorithm>
+
 
 using namespace std;
 
@@ -37,14 +40,14 @@ struct process{
     process(){}
 
     void print(){
-        cout << name << ", Time: " << duration << ", R: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << "]" << endl;
+        cout << name << ", Duration: " << duration <<", "<<isInProcess<< ", R: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << "]" << "     "<<"["<<mainResources[0]<<"]"<<"["<<mainResources[1]<<"]"<<"["<<mainResources[2]<<"]"<<endl;
     }
 
     void generateRandomProcess(unsigned int &count){
         count++;
         this->name = "P" + to_string(count);
         this->duration = getRandom(1, 7);
-        for(int i=0; i < processNumber; i++){this->resources[i] = getRandom(1, 7);}
+        for(int i=0; i < processNumber; i++){this->resources[i] = getRandom(1,7);}
         this->isInProcess = false;
     }
 
@@ -59,6 +62,7 @@ struct comparator{
 process P1("P1", 4, 2, 3, 5);
 process P2("P2", 2, 3, 4, 2);
 process P3("P3", 6, 5, 3, 3);
+
 
 class runtime{
 
@@ -119,24 +123,62 @@ class runtime{
             for(int i=0; i < 3; i++){
                 mainResources[i] += P->resources[i];
             }
+            printAll();
             P->generateRandomProcess(count);
             this->index = P->next;
+            
+            sortQ();
         }
 
-        
-
         void runOnce(bool isInitial=false){
-            sortQ();
+
+            
             if(isInitial == true){
+                sortQ();
                 this->index = Q[0];
+
+            }
+            if(isAvailable(index) && !index->isInProcess){
+                // Decrease resource
+                for(int i=0; i<3; i++){
+                    mainResources[i]-=index->resources[i];
+                }
+                index->isInProcess=true;
+            }
+            if(index->isInProcess){
+                index->duration--;
+                
             }
 
+            if(index->duration==0){
+                freeNpushRandom(index);
+            }
+
+            index=index->next;
             printAll();
+
+        }
+        bool isDeadlock(){
+            for(int i=0; i<Q.size(); i++){
+                if(isAvailable(Q[i]))
+                    return false;
+                else if(!isAvailable(Q[i]) && Q[i]->isInProcess)
+                    return false;
+                
+            }
+            return true;
         }
 
         void run(int iteration){
-            for(int i=0; i < iteration; i++){
+            unsigned int terminationCount = 0;
+            runOnce(true);
+            bool flag = false;
+            for(int i=0; i < iteration-1; i++){
                 runOnce();
+                if(isDeadlock()){
+                    cout << "Deadlock happened; Processes cannot be executed." << endl;
+                    break;
+                }
             }
         }
 
@@ -156,7 +198,7 @@ int main(){
 
     runtime A;
 
-    A.run(3);
+    A.run(30);
 
     return 0;
 }
