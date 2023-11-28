@@ -7,12 +7,13 @@ using namespace std;
 
 #define processNumber 3
 
+unsigned int mainResources[3] = {10, 10, 10};
+
 int getRandom(int minBound, int maxBound) {
     if (maxBound < minBound) {swap(minBound, maxBound);}
     int range = maxBound - minBound + 1;    
     return minBound + (rand() % range);;
 }
-
 
 struct process{
     
@@ -36,7 +37,7 @@ struct process{
     process(){}
 
     void print(){
-        cout << name << ", Time: " << duration << ", R: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << endl;
+        cout << name << ", Time: " << duration << ", R: [" << resources[0] << ", " << resources[1] << ", " << resources[2] << "]" << endl;
     }
 
     void generateRandomProcess(unsigned int &count){
@@ -54,6 +55,10 @@ struct comparator{
         return A->duration < B->duration;   // ??
     }
 };
+
+process P1("P1", 4, 2, 3, 5);
+process P2("P2", 2, 3, 4, 2);
+process P3("P3", 6, 5, 3, 3);
 
 class runtime{
 
@@ -94,8 +99,12 @@ class runtime{
         }
 
         runtime(){
-            getInput();
+            // getInput();
             this->count = 3;
+            // Push default processes if Q is empty P1, P2, P3
+            Q.push_back(&P1);
+            Q.push_back(&P2);
+            Q.push_back(&P3);
         }
 
         ~runtime(){
@@ -106,30 +115,48 @@ class runtime{
             return P->resources[0] <= mainResources[0] && P->resources[1] <= mainResources[1] && P->resources[2] <= mainResources[2];
         }
 
-        void run(){
-    
+        void freeNpushRandom(process* &P){
+            for(int i=0; i < 3; i++){
+                mainResources[i] += P->resources[i];
+            }
+            P->generateRandomProcess(count);
+            this->index = P->next;
+        }
+
+        
+
+        void runOnce(){
+            
+
+            sortQ();
+
+
+            printAll();
+        }
+
+        void run(int iteration){
+            for(int i=0; i < iteration; i++){
+                runOnce();
+            }
         }
 
         void printAll(){
-            cout << "o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o" << endl;
             for(int i=0; i < Q.size(); i++){
                 Q[i]->print();
             }
-            cout << "o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o" << endl;
+            cout << endl;
         }
 
 };
 
-unsigned int mainResources[3] = {10, 10, 10};
-process P1("P1", 4, 2, 3, 5);
-process P2("P2", 2, 3, 4, 2);
-process P3("P3", 5, 5, 3, 3);
 
 int main(){
 
     srand(static_cast<unsigned>(time(nullptr)));
 
     runtime A;
+
+    A.run(3);
 
     return 0;
 }
