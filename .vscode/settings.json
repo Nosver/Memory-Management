@@ -1,8 +1,11 @@
 {
     "C_Cpp.default.compilerPath": "/usr/bin/clang",
     "files.associations": {
+        "*.ejs": "html",
         "vector": "cpp",
         "iosfwd": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp"
     }
 }
