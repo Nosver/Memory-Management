@@ -203,7 +203,6 @@ public:
 
     void run(int iteration)
     {
-        unsigned int terminationCount = 0;
         cout << "T1"
              << "  ";
         runOnce(true);
