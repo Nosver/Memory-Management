@@ -68,7 +68,7 @@ struct comparator
 {
     bool operator()(process *A, process *B) const
     {
-        return A->duration < B->duration; // ??
+        return A->duration < B->duration; 
     }
 };
 
@@ -117,6 +117,7 @@ private:
             }
             Q.push_back(PX);
         }
+        cout<<endl;
     }
 
     bool isAvailable(process *P)
@@ -183,14 +184,20 @@ private:
     }
 
 public:
-    runtime()
+    runtime(bool input=false)
     {
-        // getInput();
         this->count = 3;
-        // Push default processes if Q is empty P1, P2, P3
-        Q.push_back(&P1);
-        Q.push_back(&P2);
-        Q.push_back(&P3);
+        if(input){
+            getInput();
+        }
+        else{
+            Q.push_back(&P1);
+            Q.push_back(&P2);
+            Q.push_back(&P3);
+        }
+        
+        
+        
     }
 
     ~runtime()
@@ -240,7 +247,7 @@ int main()
 
     srand(static_cast<unsigned>(time(nullptr)));
 
-    runtime A;
+    runtime A(true); //true for input 
 
     A.run(30);
 
