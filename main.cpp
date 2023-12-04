@@ -80,18 +80,18 @@ class runtime
 {
 
 private:
-    vector<process *> Q;
+    vector<process *> Q; //array process* arr[] 
     unsigned int count;
     process *index;
 
     void sortQ()
     {
-        sort(Q.begin(), Q.end(), comparator());
+        sort(Q.begin(), Q.end(), comparator()); // p2 -> p1 -> p3 ->p2
         for (int i = 0; i < 3; i++)
         {
             if (i == 2)
             {
-                Q.at(i)->next = Q.at(0);
+                Q.at(2)->next = Q.at(0);
             }
             else
             {
@@ -125,7 +125,7 @@ private:
         return P->resources[0] <= mainResources[0] && P->resources[1] <= mainResources[1] && P->resources[2] <= mainResources[2];
     }
 
-    void freeNpushRandom(process *&P)
+    void freeNpushRandom(process* &P)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -210,14 +210,13 @@ public:
 
     void run(int iteration)
     {
-        cout << "T1"
+        cout << "Time: 1"
              << "  ";
         runOnce(true);
         cout << "---------------------------" << endl;
-        bool flag = false;
         for (int i = 0; i < iteration - 1; i++)
         {
-            cout << "T" << i + 2 << "  ";
+            cout << "Time: " << i + 2 << "  ";
             runOnce();
             if (isDeadlock())
             {
@@ -247,7 +246,7 @@ int main()
 
     srand(static_cast<unsigned>(time(nullptr)));
 
-    runtime A(true); //true for input 
+    runtime A(false); //true for getting input from user 
 
     A.run(30);
 
