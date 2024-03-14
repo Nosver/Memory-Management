@@ -14,9 +14,9 @@ Dynamic Process Generation: Processes can be dynamically generated with random p
 Deadlock Detection: The program detects and handles deadlock situations, where processes cannot proceed due to resource unavailability.
 Usage
 
-Compilation: Compile the program using a C++ compiler. For example:
-`g++ -o resource_allocation resource_allocation.cpp`
-Execution: Run the compiled executable.
-bash
-`./resource_allocation`
+Compilation: Compile the program using a C++ compiler. For example:  
+`g++ -o resource_allocation resource_allocation.cpp`  
+Execution: Run the compiled executable.  
+bash  
+`./resource_allocation`  
 Simulation: The program simulates the execution of processes and displays the allocation of resources over time. It runs for a specified number of iterations or until a deadlock is detected.
